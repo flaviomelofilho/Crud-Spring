@@ -1,7 +1,9 @@
 package com.loiane.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -43,5 +47,18 @@ public class CourseController {
     public ResponseEntity<Course> create(@RequestBody Course course){
         return ResponseEntity.status(HttpStatus.CREATED).body(courseRepository.save(course));
     }
-    
+
+    // }
+    @PutMapping("/{id}")
+    public ResponseEntity<Course> updade(@PathVariable Long id, @RequestBody Course course){
+        return courseRepository.findById(id)
+            .map(record -> {
+                record.setName(course.getName());
+                record.setCategory(course.getCategory());
+                Course updated = courseRepository.save(record);
+                return ResponseEntity.ok().body(updated);
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+
 }
