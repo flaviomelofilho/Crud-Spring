@@ -1,6 +1,7 @@
 package com.loiane.model;
 
-import org.hibernate.Length;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -18,6 +19,9 @@ import lombok.Data;
 @Data
 @Entity
 
+
+@SQLDelete(sql = "UPDATE Course SET status = 'Inativo' WHERE id = ?")
+@SQLRestriction("status = 'Ativo'")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,6 +39,12 @@ public class Course {
     @Pattern(regexp = "Back-end|Front-end")
     @Column(length = 15,nullable = false)
     private String category;
+
+    @NonNull
+    @Size(max = 10)
+    @Pattern(regexp = "Ativo|Inativo")
+    @Column(length = 10,nullable = false)
+    private String status = "Ativo";    
 
     
 }
